@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoteHero</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4ff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: #3b82f6;
+      color: white;
+      padding: 1rem;
+    }
+    #staff {
+      position: relative;
+      margin: 2rem auto;
+      width: 400px;
+      height: 150px;
+      background: url('LINK_ẢNH_KHUÔNG') no-repeat center;
+      background-size: contain;
+    }
+    .note-img {
+      position: absolute;
+      width: 300px;
+      height: auto;
+      margin-top: 11px;
+      margin-left: -127px;
+      margin-bottom: 60px;
+      margin-right: 126px;
+    }
+    #choices {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+    }
+    button {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      background: #3b82f6;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s;
+    }
+    button:hover {
+      background: #2563eb;
+      transform: scale(1.05);
+    }
+    #feedback {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    #score {
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎵 NoteHero</h1>
+    <p>Luyện ghi nhớ nốt nhạc</p>
+  </header>
+
+  <div id="staff">
+    <img id="note" class="note-img" src="" alt="Nốt nhạc">
+  </div>
+
+  <div id="choices"></div>
+  <div id="feedback"></div>
+  <div id="score">Điểm: 0</div>
+
+  <script>
+    const notes = [
+      {ten: "Đô", name: "C", img: "Images/Do.png"},
+      {ten: "Rê", name: "D", img: "Images/Re.png"},
+      {ten: "Mi", name: "E", img: "Images/Mi.png"},
+      {ten: "Fa", name: "F", img: "Images/Fa.png"},
+      {ten: "Son", name: "G", img: "Images/Son.png"},
+      {ten: "La", name: "A", img: "Images/La.png"},
+      {ten: "Si", name: "B", img: "Images/Si.png"},
+      {ten: "Đố", name: "C2", img: "Images/Dos.png"}
+    ];
+
+    let currentNote;
+    let score = 0;
+
+    const noteEl = document.getElementById("note");
+    const feedbackEl = document.getElementById("feedback");
+    const scoreEl = document.getElementById("score");
+    const choicesEl = document.getElementById("choices");
+
+    function newQuestion() {
+      currentNote = notes[Math.floor(Math.random() * notes.length)];
+      noteEl.src = currentNote.img;
+      noteEl.alt = currentNote.ten;
+      // Có thể chỉnh toạ độ left/top nếu ảnh nốt không ở đúng vị trí giữa staff
+      noteEl.style.top = "0px";  
+      noteEl.style.left = ( (400 - 40) / 2 ) + "px"; // đặt ở giữa ngang, m chỉnh nếu muốn
+      feedbackEl.textContent = "";
+      renderChoices();
+    }
+
+    function renderChoices() {
+      choicesEl.innerHTML = "";
+      const shuffled = notes.slice().sort(() => Math.random() - 0.5);
+      shuffled.forEach(n => {
+        const btn = document.createElement("button");
+        btn.textContent = n.ten;
+        btn.onclick = () => checkAnswer(n);
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(answer) {
+      if (answer.name === currentNote.name) {
+        feedbackEl.textContent = "✅ Đúng rồi! Đó là " + currentNote.ten;
+        feedbackEl.style.color = "green";
+        score++;
+      } else {
+        feedbackEl.textContent = "❌ Sai. Đó là " + currentNote.ten;
+        feedbackEl.style.color = "red";
+      }
+      scoreEl.textContent = "Điểm: " + score;
+      setTimeout(newQuestion, 1500);
+    }
+
+    newQuestion();
+  </script>
+</body>
+</html>
